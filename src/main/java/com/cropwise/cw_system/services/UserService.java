@@ -1,14 +1,11 @@
 package com.cropwise.cw_system.services;
 
-import com.cropwise.cw_system.dtos.UserMapper;
-import com.cropwise.cw_system.dtos.UserRequest;
-import com.cropwise.cw_system.dtos.UserResponse;
+import com.cropwise.cw_system.dtos.user.UserMapper;
+import com.cropwise.cw_system.dtos.user.UserRequest;
+import com.cropwise.cw_system.dtos.user.UserResponse;
 import com.cropwise.cw_system.models.User;
 import com.cropwise.cw_system.repositories.UserRepository;
-import jdk.jshell.spi.ExecutionControl;
-import org.springframework.boot.autoconfigure.websocket.servlet.UndertowWebSocketServletWebServerCustomizer;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 

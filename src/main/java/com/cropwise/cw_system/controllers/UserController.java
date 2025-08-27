@@ -1,12 +1,10 @@
 package com.cropwise.cw_system.controllers;
 
-import com.cropwise.cw_system.dtos.UserRequest;
-import com.cropwise.cw_system.dtos.UserResponse;
-import com.cropwise.cw_system.models.User;
+import com.cropwise.cw_system.dtos.user.UserRequest;
+import com.cropwise.cw_system.dtos.user.UserResponse;
 import com.cropwise.cw_system.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +25,6 @@ public class UserController {
        // sin el response return userService.getAllUsers();
     }
 
-    //es la respuesta con el userservice, que pasa al request, y segun el estado create
     @PostMapping("/users")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
         return new ResponseEntity<>(userService.createUser(userRequest), HttpStatus.CREATED );
