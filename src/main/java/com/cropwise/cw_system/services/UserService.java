@@ -32,7 +32,7 @@ public class UserService {
         return UserMapper.entityToDto(savedUser);
     }
 
-    public UserResponse getUserById (Long id){
+    public UserResponse getUserById (Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + id));
         return UserMapper.entityToDto(user);
@@ -46,7 +46,6 @@ public class UserService {
         actualUser.setPassword(userRequest.password());
 
         User updateUser = userRepository.save(actualUser);
-
         return UserMapper.entityToDto(updateUser);
     }
 

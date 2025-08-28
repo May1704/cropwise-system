@@ -31,5 +31,26 @@ public class CropService {
         return CropMapper.entityToDto(savedCrop);
     }
 
+    public CropResponse getCropById (Long id) {
+        Crop crop = cropRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Crop not found with id " + id));
+        return CropMapper.entityToDto(crop);
+    }
+
+    public CropResponse updateCrop (Long id, CropRequest cropRequest) {
+        Crop actualCrop = cropRepository.findById(id).orElseThrow(() -> new RuntimeException("Crop not found with id" + id));
+
+        actualCrop.setName(cropRequest.name());
+        actualCrop.setDescription(cropRequest.description());
+
+        Crop updateCrop = cropRepository.save(actualCrop);
+        return CropMapper.entityToDto(updateCrop);
+    }
+
+    public void deleteCrop (Long id) {
+        Crop currentCrop = cropRepository.findById(id).orElseThrow(() -> new RuntimeException("Crop not found with id " + id));
+        cropRepository.delete(currentCrop);
+    }
+
 
 }
