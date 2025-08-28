@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +26,22 @@ public class CropController {
     @PostMapping("/crops")
     public ResponseEntity<CropResponse> createCrop(@Valid @RequestBody CropRequest cropRequest) {
         return new ResponseEntity<>(cropService.createCrop(cropRequest), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/crops/{id}")
+    public ResponseEntity<CropResponse> getCropById(@PathVariable Long id) {
+        return new ResponseEntity<>(cropService.getCropById(id),HttpStatus.OK);
+    }
+
+    @PutMapping("crops/{id}")
+    public ResponseEntity<CropResponse> updateCrop(@PathVariable Long id, @Valid @RequestBody CropRequest cropRequest) {
+        return new ResponseEntity<>(cropService.updateCrop(id, cropRequest), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/crops/{id}")
+    public ResponseEntity<Void> deleteCrop(@PathVariable Long id) {
+        cropService.deleteCrop(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
