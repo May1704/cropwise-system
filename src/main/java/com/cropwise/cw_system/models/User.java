@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="users")
 public class User {
@@ -14,6 +17,9 @@ public class User {
     private String name;
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Crop> crops = new ArrayList<>();
 
     public User() {
     }
@@ -56,5 +62,11 @@ public class User {
         this.password = password;
     }
 
+    public List<Crop> getCrops() {
+        return crops;
+    }
 
+    public void setCrops(List<Crop> crops) {
+        this.crops = crops;
+    }
 }

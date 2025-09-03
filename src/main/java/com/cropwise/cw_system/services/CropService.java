@@ -4,7 +4,9 @@ import com.cropwise.cw_system.dtos.crop.CropMapper;
 import com.cropwise.cw_system.dtos.crop.CropRequest;
 import com.cropwise.cw_system.dtos.crop.CropResponse;
 import com.cropwise.cw_system.models.Crop;
+import com.cropwise.cw_system.models.User;
 import com.cropwise.cw_system.repositories.CropRepository;
+import com.cropwise.cw_system.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +14,11 @@ import java.util.List;
 @Service
 public class CropService {
     private final CropRepository cropRepository;
+    private final UserRepository userRepository;
 
-    public CropService(CropRepository cropRepository) {
+    public CropService(CropRepository cropRepository, UserRepository userRepository) {
         this.cropRepository = cropRepository;
+        this.userRepository = userRepository;
     }
 
     public List<CropResponse>getAllCrops() {
@@ -26,7 +30,9 @@ public class CropService {
     }
 
     public CropResponse createCrop(CropRequest cropRequest){
-        Crop newCrop = CropMapper.dtoToEntity(cropRequest);
+        User foundUser = userRepository.findByName(cropRequest.userName()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Crop newCrop = CropMapper.dtoToEntity(cropRequest,foundUser);
+        //newCrop.setUser(foundUser);
         Crop savedCrop = cropRepository.save(newCrop);
         return CropMapper.entityToDto(savedCrop);
     }
