@@ -2,6 +2,8 @@ package com.cropwise.cw_system.dtos.user;
 
 import com.cropwise.cw_system.models.User;
 
+import java.util.List;
+
 
 public class UserMapper {
 
@@ -10,6 +12,9 @@ public class UserMapper {
     }
 
    public static UserResponse entityToDto (User user){
-        return new UserResponse(user.getName(), user.getEmail());
+    List<String> crops = user.getCrops().stream()
+            .map(crop -> crop.getName())
+            .toList();
+        return new UserResponse(user.getName(), user.getEmail(), crops);
    }
 }
