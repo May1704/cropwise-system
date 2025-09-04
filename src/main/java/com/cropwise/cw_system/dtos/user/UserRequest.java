@@ -12,6 +12,7 @@ public record UserRequest(
         @Size(min = 10, max = 20, message = "Email must contain min 2 and max 20 characters")
         String email,
         @NotBlank(message = "Password is required")
-        String password
+        String password,
+        String role
 ) {
 }

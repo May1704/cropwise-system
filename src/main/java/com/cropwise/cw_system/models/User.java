@@ -17,6 +17,7 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private String role;
 
     @OneToMany(mappedBy = "user")
     private List<Crop> crops = new ArrayList<>();
@@ -24,10 +25,11 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId() {
@@ -68,5 +70,13 @@ public class User {
 
     public void setCrops(List<Crop> crops) {
         this.crops = crops;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

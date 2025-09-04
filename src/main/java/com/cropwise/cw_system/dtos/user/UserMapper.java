@@ -8,13 +8,13 @@ import java.util.List;
 public class UserMapper {
 
     public static User dtoToEntity (UserRequest dtoUserRequest){
-        return new User(dtoUserRequest.name(),dtoUserRequest.email(),dtoUserRequest.password());
+        return new User(dtoUserRequest.name(),dtoUserRequest.email(),dtoUserRequest.password(), dtoUserRequest.role());
     }
 
    public static UserResponse entityToDto (User user){
     List<String> crops = user.getCrops().stream()
             .map(crop -> crop.getName())
             .toList();
-        return new UserResponse(user.getName(), user.getEmail(), crops);
+        return new UserResponse(user.getName(), user.getEmail(), user.getRole(), crops);
    }
 }
