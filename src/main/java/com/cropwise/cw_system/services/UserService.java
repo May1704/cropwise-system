@@ -3,19 +3,25 @@ package com.cropwise.cw_system.services;
 import com.cropwise.cw_system.dtos.user.UserMapper;
 import com.cropwise.cw_system.dtos.user.UserRequest;
 import com.cropwise.cw_system.dtos.user.UserResponse;
+import com.cropwise.cw_system.exception.UsernameNotFoundException;
 import com.cropwise.cw_system.models.User;
 import com.cropwise.cw_system.repositories.UserRepository;
+import com.cropwise.cw_system.security.CustomUserDetail;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
-
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponse> getAllUsers() {
@@ -28,6 +34,7 @@ public class UserService {
 
     public UserResponse createUser(UserRequest userRequest) {
         User newUser = UserMapper.dtoToEntity(userRequest);
+        newUser.setPassword(passwordEncoder.encode(userRequest.password()));
         User savedUser = userRepository.save(newUser);
         return UserMapper.entityToDto(savedUser);
     }
@@ -55,5 +62,11 @@ public class UserService {
 
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        return userRepository.findByName(userName)
+                .map(user-> new CustomUserDetail(user))
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
+    }
 
 }
