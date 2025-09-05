@@ -17,7 +17,13 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public enum Role {
+        ADMIN, USER
+    }
 
     @OneToMany(mappedBy = "user")
     private List<Crop> crops = new ArrayList<>();
@@ -25,7 +31,7 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, String role) {
+    public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -72,11 +78,11 @@ public class User {
         this.crops = crops;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }

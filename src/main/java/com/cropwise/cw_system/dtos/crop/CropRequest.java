@@ -11,6 +11,5 @@ public record CropRequest(
         @Size(max = 150, message = "Description must contain max 150 characters")
         String description,
         String userName
-        //User user
 ) {
 }

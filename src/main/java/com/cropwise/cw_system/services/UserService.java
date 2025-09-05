@@ -7,6 +7,8 @@ import com.cropwise.cw_system.exception.UsernameNotFoundException;
 import com.cropwise.cw_system.models.User;
 import com.cropwise.cw_system.repositories.UserRepository;
 import com.cropwise.cw_system.security.CustomUserDetail;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -67,6 +69,16 @@ public class UserService implements UserDetailsService {
         return userRepository.findByName(userName)
                 .map(user-> new CustomUserDetail(user))
                 .orElseThrow(() -> new UsernameNotFoundException(userName));
+    }
+
+    public User getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        String username = authentication.getName();
+        return userRepository.findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
 }

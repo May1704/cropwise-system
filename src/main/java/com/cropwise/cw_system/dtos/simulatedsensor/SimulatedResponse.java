@@ -7,6 +7,5 @@ public record SimulatedResponse(
         double ph,
         String cropName,
         String userName
-        //String cropId
 ) {
 }

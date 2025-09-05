@@ -6,6 +6,7 @@ import com.cropwise.cw_system.services.CropService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,27 +21,27 @@ public class CropController {
     }
 
     @GetMapping("/crops")
-    public ResponseEntity<List<CropResponse>> getAllCrops() {
-        return new ResponseEntity<>(cropService.getAllCrops(), HttpStatus.OK);
+    public ResponseEntity<List<CropResponse>> getAllCrops(Authentication authentication) {
+        return new ResponseEntity<>(cropService.getAllCrops(authentication), HttpStatus.OK);
     }
     @PostMapping("/crops")
-    public ResponseEntity<CropResponse> createCrop(@Valid @RequestBody CropRequest cropRequest) {
-        return new ResponseEntity<>(cropService.createCrop(cropRequest), HttpStatus.CREATED);
+    public ResponseEntity<CropResponse> createCrop(@Valid @RequestBody CropRequest cropRequest, Authentication authentication) {
+        return new ResponseEntity<>(cropService.createCrop(cropRequest,authentication), HttpStatus.CREATED);
     }
 
     @GetMapping("/crops/{id}")
-    public ResponseEntity<CropResponse> getCropById(@PathVariable Long id) {
-        return new ResponseEntity<>(cropService.getCropById(id),HttpStatus.OK);
+    public ResponseEntity<CropResponse> getCropById(@PathVariable Long id, Authentication authentication) {
+        return new ResponseEntity<>(cropService.getCropById(id,authentication),HttpStatus.OK);
     }
 
     @PutMapping("crops/{id}")
-    public ResponseEntity<CropResponse> updateCrop(@PathVariable Long id, @Valid @RequestBody CropRequest cropRequest) {
-        return new ResponseEntity<>(cropService.updateCrop(id, cropRequest), HttpStatus.OK);
+    public ResponseEntity<CropResponse> updateCrop(@PathVariable Long id, @Valid @RequestBody CropRequest cropRequest, Authentication authentication) {
+        return new ResponseEntity<>(cropService.updateCrop(id, cropRequest, authentication), HttpStatus.OK);
     }
 
     @DeleteMapping("/crops/{id}")
-    public ResponseEntity<Void> deleteCrop(@PathVariable Long id) {
-        cropService.deleteCrop(id);
+    public ResponseEntity<Void> deleteCrop(@PathVariable Long id, Authentication authentication) {
+        cropService.deleteCrop(id, authentication);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

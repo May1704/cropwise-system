@@ -12,4 +12,28 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ForbiddenUserRequest.class)
+    public ResponseEntity<ErrorResponse> handleForbiddenUserRequest(ForbiddenUserRequest ex) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ValueOutOfRange.class)
+    public ResponseEntity<ErrorResponse> ValueOutOfRange(ValueOutOfRange ex) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CropNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCropNotFoundException(CropNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }

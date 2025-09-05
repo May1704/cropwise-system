@@ -16,6 +16,10 @@ public class Crop {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "idealsensor_id")
+    private IdealSensor idealSensor;
+
     public Crop() {
     }
 
@@ -23,6 +27,13 @@ public class Crop {
         this.name = name;
         this.description = description;
         this.user = user;
+    }
+
+    public Crop(String name, String description, User user, IdealSensor idealSensor) {
+        this.name = name;
+        this.description = description;
+        this.user = user;
+        this.idealSensor = idealSensor;
     }
 
     public Long getId() {
@@ -55,5 +66,13 @@ public class Crop {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public IdealSensor getIdealSensor() {
+        return idealSensor;
+    }
+
+    public void setIdealSensor(IdealSensor idealSensor) {
+        this.idealSensor = idealSensor;
     }
 }
