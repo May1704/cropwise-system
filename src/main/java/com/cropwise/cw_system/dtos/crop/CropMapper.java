@@ -1,6 +1,7 @@
 package com.cropwise.cw_system.dtos.crop;
 
 import com.cropwise.cw_system.models.Crop;
+import com.cropwise.cw_system.models.IdealSensor;
 import com.cropwise.cw_system.models.User;
 
 public class CropMapper {

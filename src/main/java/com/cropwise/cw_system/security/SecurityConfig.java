@@ -34,13 +34,13 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers("/users").permitAll()
-                        .requestMatchers("/crops").permitAll()
-                        .requestMatchers("/simulations").permitAll()
+                        .requestMatchers("/users").hasRole("ADMIN")
+                        .requestMatchers("/crops").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/simulations").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/ideals").hasAnyRole("ADMIN", "USER")
                         //agrega otras rutas que interese mentras estamos en permit all para ver que pasaSuenos
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(manager-> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

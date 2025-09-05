@@ -17,7 +17,6 @@ public record SimulatedRequest(
         @DecimalMax(value = "14.0", message = "The maximum pH allowed is 14.0")
         double ph,
         Long cropId,
-        //String cropName,
         Long userId
 
 ) {
