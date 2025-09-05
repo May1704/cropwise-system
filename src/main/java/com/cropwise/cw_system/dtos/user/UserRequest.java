@@ -1,5 +1,6 @@
 package com.cropwise.cw_system.dtos.user;
 
+import com.cropwise.cw_system.models.User;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,6 +13,7 @@ public record UserRequest(
         @Size(min = 10, max = 20, message = "Email must contain min 2 and max 20 characters")
         String email,
         @NotBlank(message = "Password is required")
-        String password
+        String password,
+        User.Role role
 ) {
 }

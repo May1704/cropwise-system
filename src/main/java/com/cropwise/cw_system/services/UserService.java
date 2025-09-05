@@ -3,19 +3,27 @@ package com.cropwise.cw_system.services;
 import com.cropwise.cw_system.dtos.user.UserMapper;
 import com.cropwise.cw_system.dtos.user.UserRequest;
 import com.cropwise.cw_system.dtos.user.UserResponse;
+import com.cropwise.cw_system.exception.UsernameNotFoundException;
 import com.cropwise.cw_system.models.User;
 import com.cropwise.cw_system.repositories.UserRepository;
+import com.cropwise.cw_system.security.CustomUserDetail;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
-
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponse> getAllUsers() {
@@ -28,11 +36,12 @@ public class UserService {
 
     public UserResponse createUser(UserRequest userRequest) {
         User newUser = UserMapper.dtoToEntity(userRequest);
+        newUser.setPassword(passwordEncoder.encode(userRequest.password()));
         User savedUser = userRepository.save(newUser);
         return UserMapper.entityToDto(savedUser);
     }
 
-    public UserResponse getUserById (Long id){
+    public UserResponse getUserById (Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + id));
         return UserMapper.entityToDto(user);
@@ -46,7 +55,6 @@ public class UserService {
         actualUser.setPassword(userRequest.password());
 
         User updateUser = userRepository.save(actualUser);
-
         return UserMapper.entityToDto(updateUser);
     }
 
@@ -56,5 +64,21 @@ public class UserService {
 
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        return userRepository.findByName(userName)
+                .map(user-> new CustomUserDetail(user))
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
+    }
+
+    public User getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        String username = authentication.getName();
+        return userRepository.findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
 
 }
