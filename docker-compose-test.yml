@@ -1,0 +1,99 @@
+services:
+
+  cropwise-app:
+    #build:
+    #  context: . # Contexto de construcción: directorio actual
+    #  dockerfile: Dockerfile # Usa el Dockerfile en el directorio actual
+    image: may1704/cropwise
+    # Nombre personalizado del contenedor para identificarlo fácilmente
+    container_name: cropwise-springboot
+
+    # Mapeo de puertos: host:contenedor
+    # El puerto 8081 de tu máquina se conecta al puerto 8080 dentro del contenedor
+    ports:
+      - "8081:8080"
+
+    # Variables de entorno pasadas a la aplicación Spring Boot
+    environment:
+      - SERVER_PORT=8080 # Define el puerto del servidor dentro del contenedor
+      - DB_URL=jdbc:mysql://cropwise-db:3306/cropwise # URL de conexión a la base de datos usando el nombre del servicio
+      - DB_USER=crop_user # Usuario de la base de datos
+      - DB_PASSWORD=crop123 # Contraseña del usuario de la base de datos
+
+    # Política de reinicio: reinicia el contenedor a menos que lo detengas manualmente
+    restart: unless-stopped
+
+    # Dependencias de servicios: asegura que la base de datos esté sana antes de iniciar la app
+    depends_on:
+      cropwise-db:
+        condition: service_healthy # Espera a que la verificación de salud de la BD sea correcta
+
+    # Configuración de verificación de salud para la aplicación Spring Boot
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"] # Comando de verificación de salud
+      interval: 30s # Ejecuta cada 30 segundos
+      timeout: 10s # Tiempo de espera de 10 segundos
+      retries: 3 # Reintenta 3 veces antes de marcar como no saludable
+      start_period: 60s # Espera 60 segundos antes de empezar a verificar
+
+    # Conexión a una red personalizada
+    networks:
+      - cropwise-network
+
+  # Servicio de base de datos MySQL
+  cropwise-db:
+    # Usa la imagen oficial de MySQL 8.0 desde Docker Hub
+    image: mysql:8.0
+
+    # Nombre personalizado del contenedor para identificarlo fácilmente
+    container_name: cropwise-db
+
+    # Variables de entorno para inicialización de la base de datos MySQL
+    environment:
+      MYSQL_DATABASE: cropwise # Crea la base de datos llamada 'cropwise'
+      MYSQL_USER: crop_user # Crea el usuario 'crop_user'
+      MYSQL_PASSWORD: crop123 # Contraseña para el usuario 'crop_user'
+      MYSQL_ROOT_PASSWORD: root123 # Contraseña para el usuario root
+
+    # Mapeo de puertos: host:contenedor
+    # El puerto 3307 de tu máquina se conecta al puerto 3306 dentro del contenedor
+    ports:
+      - "3307:3306"
+
+    # Montaje de volúmenes para la persistencia de datos
+    # Asocia el volumen 'mysql_data' con el directorio de datos de MySQL
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    # Política de reinicio: reinicia el contenedor a menos que lo detengas manualmente
+    restart: unless-stopped
+
+    # Configuración de verificación de salud para la base de datos MySQL
+    healthcheck:
+      test: [
+        "CMD",
+        "mysqladmin", # Utilidad de administración de MySQL
+        "ping", # Comando para comprobar si MySQL responde
+        "-h",
+        "localhost", # Conectar a localhost dentro del contenedor
+        "-u",
+        "crop_user", # Usuario para la verificación de salud
+        "-pcrop123", # Contraseña del usuario
+      ]
+      interval: 10s # Verifica cada 10 segundos
+      timeout: 5s # Tiempo de espera de 5 segundos
+      retries: 5 # Reintenta 5 veces antes de marcar como no saludable
+      start_period: 30s # Espera 30 segundos antes de empezar a verificar
+
+    # Conexión a una red personalizada
+    networks:
+      - cropwise-network
+
+# Configuración de redes
+networks:
+  cropwise-network:
+    driver: bridge # Usa el driver bridge para comunicación entre contenedores
+
+# Configuración de volúmenes
+volumes:
+  mysql_data: # Volumen nombrado para la persistencia de datos de MySQL
