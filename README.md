@@ -16,6 +16,7 @@ El sistema permite a los usuarios registrar cultivos, gestionarlos y acceder a d
 - **Postman** para pruebas
 - **Docker** (puerto expuesto: **8081**)
 - Arquitectura **MVC**
+- **Github Actions** Ejecutar build, test y release de forma automatizada.
 
 ---
 
